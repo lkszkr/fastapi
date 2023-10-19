@@ -1,6 +1,6 @@
 from typing import List
 from fastapi import Depends, Response, status, HTTPException, APIRouter
-from .. import models, schemas
+from .. import models, schemas, oauth2
 from ..database import get_db
 from sqlalchemy.orm import Session
 
@@ -9,7 +9,7 @@ router = APIRouter(
     tags=["Posts"]
 )
 
-@router.get("/", response_model=List[schemas.Post])
+@router.get("/", response_model=List[schemas.Post]) # w jaki sposob ma byc domysle zwrocony request od api
 def get_posts(db: Session = Depends(get_db)):
     # cursor.execute("""SELECT * FROM posts""")
     # posts = cursor.fetchall()
@@ -17,17 +17,16 @@ def get_posts(db: Session = Depends(get_db)):
     return posts # Automatyczna serializacja
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.Post) # zmienia domyslny status code
-def create_posts(post: schemas.CreatePost, db: Session = Depends(get_db)): # Body(...) wszystkie pola z body requesta przetwarza do slownika i zapisuje w payloads
+def create_posts(post: schemas.CreatePost, db: Session = Depends(get_db), current_user =  Depends(oauth2.get_current_user)): # Body(...) wszystkie pola z body requesta przetwarza do slownika i zapisuje w payloads
     # print(post.rating)
     # print(post.model_dump()) # konwertuje na slownik
     # post_dict = post.model_dump()
     # post_dict['id'] = randrange(2,1000000)
     # my_posts.append(post_dict)
-    
+    print(current_user.email) # dostep do pol user (moze byc blad)
     # cursor.execute("""INSERT INTO posts(title, content, published) VALUES (%s, %s, %s) RETURNING *""", (post.title, post.content, post.published))
     # new_post = cursor.fetchone()
     # conn.commit()
-    
     new_post = models.Post(**post.model_dump())
     db.add(new_post)
     db.commit()

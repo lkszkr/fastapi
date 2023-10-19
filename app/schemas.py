@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 from pydantic import BaseModel, EmailStr # walidacja danych, pydantic osobna paczka
 
 # Walidacja automatyczna z pydantic
@@ -26,3 +27,16 @@ class UserOut(BaseModel):
     created_at: datetime
     class Config:
         from_attributes = True
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    id: Optional[str] = None # powoduje blad gdy w create_token nie rzutuje sie na str
+
+
