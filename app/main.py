@@ -1,31 +1,26 @@
 from fastapi import FastAPI 
-from random import randrange
-import psycopg2
-from psycopg2.extras import RealDictCursor
-import time
-from . import models, schemas, utils
+from . import models
 from .database import engine, get_db
-from sqlalchemy.orm import Session
 
 from .routers import post,user,auth
 
-models.Base.metadata.create_all(bind=engine)
+models.Base.metadata.create_all(bind=engine) # tworzy baze danych
 
 app = FastAPI()
 
 get_db()
 
-
-while True:
-    try:
-        conn = psycopg2.connect(host="localhost", database="fastapi", user="postgres", password="admin", cursor_factory=RealDictCursor)
-        cursor = conn.cursor()
-        print("Database connection was succsesfull!")
-        break
-    except Exception as error:
-        print("Connection to database failed")
-        print("Error: ", error)
-        time.sleep(2)
+# czyst sql
+# while True:
+#     try:
+#         conn = psycopg2.connect(host="localhost", database="fastapi", user="postgres", password="admin", cursor_factory=RealDictCursor)
+#         cursor = conn.cursor()
+#         print("Database connection was succsesfull!")
+#         break
+#     except Exception as error:
+#         print("Connection to database failed")
+#         print("Error: ", error)
+#         time.sleep(2)
 
 # hardcoded data
 # my_posts = [
