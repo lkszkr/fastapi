@@ -3,11 +3,14 @@ from typing import Optional
 from pydantic import BaseModel, EmailStr # walidacja danych, pydantic osobna paczka
 
 class UserCreate(BaseModel):
+    name: str
+    surname: str
     email: EmailStr
     password: str
 
 class UserOut(BaseModel):
     id: int
+    name: str
     email: EmailStr
     created_at: datetime
     class Config:
@@ -16,11 +19,13 @@ class UserOut(BaseModel):
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
+
 # Walidacja automatyczna z pydantic
-class PostBase(BaseModel): 
+class PostBase(BaseModel):
     title: str
     content: str
-    published: bool = True
+    goal: float
+    #published: bool = True
 
 class CreatePost(PostBase):
     pass
@@ -32,6 +37,21 @@ class Post(PostBase):
     owner: UserOut
     class Config:
         from_attributes = True
+
+class CreatePayment(BaseModel):
+    ammount: float
+
+class Payment(BaseModel):
+    id: int
+    ammount: float
+    status: bool
+    user_id: int
+    post_id: int
+    user: UserOut
+    post: PostBase
+    class Config:
+        from_attributes = True
+
 
 class Token(BaseModel):
     access_token: str

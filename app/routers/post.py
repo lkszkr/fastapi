@@ -47,6 +47,17 @@ def get_post(id: int, db: Session = Depends(get_db)): # Waliduje i rzutuje z str
     # print(post)
     return post
 
+@router.post("/{id}/payment", status_code=status.HTTP_202_ACCEPTED, response_model=schemas.Payment)
+def create_payment(id: int, payment: schemas.CreatePayment, db: Session = Depends(get_db), current_user =  Depends(oauth2.get_current_user)):
+    post = db.query(models.Post).filter(models.Post.id == id).first()
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with {id} not found")
+    new_payment = models.Payments(user_id=current_user.id, post_id=id, **payment.model_dump())
+    db.add(new_payment)
+    db.commit()
+    db.refresh(new_payment)
+    return new_payment
+
 @router.delete("/{id}")
 def delete_post(id: int, db: Session = Depends(get_db), current_user =  Depends(oauth2.get_current_user)):
     # cursor.execute("""DELETE FROM posts WHERE id = %s RETURNING *""", (str(id)))
