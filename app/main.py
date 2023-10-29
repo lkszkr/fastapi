@@ -1,16 +1,14 @@
 from fastapi import FastAPI 
 from . import models
 from .database import engine, get_db
-
 from .routers import post,user,auth
 
-models.Base.metadata.create_all(bind=engine) # tworzy baze danych
-
+models.Base.metadata.create_all(bind=engine) # Creates database
 app = FastAPI()
 
 get_db()
 
-# czyst sql
+# Old code using SQL queries not SQLAlchemy
 # while True:
 #     try:
 #         conn = psycopg2.connect(host="localhost", database="fastapi", user="postgres", password="admin", cursor_factory=RealDictCursor)
@@ -27,7 +25,7 @@ get_db()
 #     {"id": 1, "title": "title 1", "content": "content 1"},
 #     {"id": 2, "title": "title 2", "content": "content 2"}
 # ]
-# niepotrzebne
+# not needed
 # def find_post(id):
 #     for post in my_posts:
 #         if post["id"] == id:
@@ -37,7 +35,6 @@ get_db()
 #     for index, post in enumerate(my_posts):
 #         if post["id"] == id:
 #             return index
-
 
 @app.get("/")
 def root():

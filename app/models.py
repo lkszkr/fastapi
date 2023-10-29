@@ -1,5 +1,3 @@
-import email
-from turtle import title
 from .database import Base
 from sqlalchemy import TIMESTAMP, Boolean, Column, Float, ForeignKey, Integer, Nullable, String
 from sqlalchemy.sql.expression import text
@@ -10,7 +8,7 @@ class Payments(Base):
     
     id = Column(Integer, primary_key=True, nullable=False)
     ammount = Column(Float, nullable=False)
-    status = Column(Boolean, nullable=False, default=True)
+    status = Column(Boolean, nullable=False, server_default="True")
     created_at = Column(TIMESTAMP(timezone=False), nullable=False, server_default=text("now()"))
 
     #ForeignKeys

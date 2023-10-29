@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings
 
+# Confing for enviroment variables
 class Settings(BaseSettings):
     database_hostname: str
     database_port: str

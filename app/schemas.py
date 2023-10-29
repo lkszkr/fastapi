@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, EmailStr # walidacja danych, pydantic osobna paczka
+from pydantic import BaseModel, EmailStr
+#Pydantic validates data automaticly
 
 class UserCreate(BaseModel):
     name: str
@@ -20,12 +21,10 @@ class UserLogin(BaseModel):
     email: EmailStr
     password: str
 
-# Walidacja automatyczna z pydantic
 class PostBase(BaseModel):
     title: str
     content: str
     goal: float
-    #published: bool = True
 
 class CreatePost(PostBase):
     pass
@@ -52,12 +51,11 @@ class Payment(BaseModel):
     class Config:
         from_attributes = True
 
-
 class Token(BaseModel):
     access_token: str
     token_type: str
 
 class TokenData(BaseModel):
-    id: Optional[str] = None # powoduje blad gdy w create_token nie rzutuje sie na str
-
-
+    # Cases error when it is not casted as string in create_token
+    id: Optional[str] = None
+    
