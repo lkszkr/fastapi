@@ -1,5 +1,5 @@
 from .database import Base
-from sqlalchemy import TIMESTAMP, Boolean, Column, Float, ForeignKey, Integer, Nullable, String
+from sqlalchemy import TIMESTAMP, Boolean, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.sql.expression import text
 from sqlalchemy.orm import relationship
 
@@ -11,12 +11,12 @@ class Payments(Base):
     status = Column(Boolean, nullable=False, server_default="True")
     created_at = Column(TIMESTAMP(timezone=False), nullable=False, server_default=text("now()"))
 
-    #ForeignKeys
+    # ForeignKeys
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     post_id = Column(Integer, ForeignKey("posts.id", ondelete="CASCADE"), nullable=False)
 
-    user = relationship("User")
-    post = relationship("Post")
+    post = relationship("Post", back_populates="payments")
+
 
 class Post(Base):
     __tablename__ = "posts"
@@ -25,13 +25,16 @@ class Post(Base):
     title = Column(String, nullable=False)
     content = Column(String, nullable=False)
     goal = Column(Float, nullable=False)
-    #published = Column(Boolean, server_default="True",nullable=False )
     created_at = Column(TIMESTAMP(timezone=False), nullable=False, server_default=text("now()"))
 
-    #ForeignKeys
+    # ForeignKeys
     owner_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    
+    # Base64 encoded data
+    image = Column(String, nullable=True)
 
-    owner = relationship("User") # fetching data from User bellow 
+    payments = relationship("Payments", back_populates="post", cascade="all, delete-orphan") 
+    owner = relationship("User") # Fetching data from User bellow 
 
 class User(Base):
     __tablename__ = "users"

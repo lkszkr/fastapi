@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel, EmailStr
 #Pydantic validates data automaticly
 
@@ -21,10 +21,23 @@ class UserLogin(BaseModel):
     email: EmailStr
     password: str
 
+class Payment(BaseModel):
+    id: int
+    ammount: float
+    status: bool
+    user_id: int
+    post_id: int
+    class Config:
+        from_attributes = True
+
+class CreatePayment(BaseModel):
+    ammount: float
+
 class PostBase(BaseModel):
     title: str
     content: str
     goal: float
+    image: Optional[str] = None
 
 class CreatePost(PostBase):
     pass
@@ -33,21 +46,8 @@ class Post(PostBase):
     id: int
     created_at: datetime
     owner_id: int
+    payments: List[Payment]
     owner: UserOut
-    class Config:
-        from_attributes = True
-
-class CreatePayment(BaseModel):
-    ammount: float
-
-class Payment(BaseModel):
-    id: int
-    ammount: float
-    status: bool
-    user_id: int
-    post_id: int
-    user: UserOut
-    post: PostBase
     class Config:
         from_attributes = True
 

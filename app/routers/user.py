@@ -8,9 +8,11 @@ router = APIRouter(
     tags=["Users"]
 )
 
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut) # Changes default status code
+@router.post("/register", status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut) # Changes default status code
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db), ):
     
+    if db.query(models.User).filter(models.User.email == user.email).first():
+        raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail=f"Email already exists")
     user.password = utils.hash(user.password)
     new_user = models.User(**user.model_dump())
     db.add(new_user)
