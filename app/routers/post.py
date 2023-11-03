@@ -35,7 +35,7 @@ def create_posts(post: schemas.CreatePost, db: Session = Depends(get_db), curren
 
     return  new_post
 
-#Using file Upload
+#Using file Upload, can be deleted 
 # @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.Post) # Changing default status code
 # def create_posts(title: str = Form(), content: str = Form(), goal: float = Form(), image: UploadFile = File(default=None), db: Session = Depends(get_db), current_user =  Depends(oauth2.get_current_user)): 
 
@@ -95,7 +95,7 @@ def delete_post(id: int, db: Session = Depends(get_db), current_user =  Depends(
     deleted_post = deleted_post_query.first()
     if deleted_post == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with {id} not found")
-    if deleted_post.owner_id != current_user.id:
+    if deleted_post.owner_id != current_user.id and current_user.privileged == False:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
     deleted_post_query.delete(synchronize_session=False)
     db.commit()
@@ -108,8 +108,8 @@ def update_post(id: int, post : schemas.CreatePost, db: Session = Depends(get_db
     updated_post = updated_post_query.first()
     if updated_post == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Post with {id} not found")
-    
-    if updated_post.owner_id != current_user.id:
+    #print(type(current_user.privileged))
+    if updated_post.owner_id != current_user.id and current_user.privileged == False:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
     update_data = post.model_dump()
 

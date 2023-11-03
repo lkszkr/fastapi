@@ -44,6 +44,7 @@ class User(Base):
     surname = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
+    privileged = Column(Boolean, nullable=False, server_default="False")
     created_at = Column(TIMESTAMP(timezone=False), nullable=False, server_default=text("now()"))
 
 

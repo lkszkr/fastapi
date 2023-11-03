@@ -1,4 +1,5 @@
 from datetime import datetime
+import email
 from typing import Optional, List
 from pydantic import BaseModel, EmailStr
 #Pydantic validates data automaticly
@@ -58,4 +59,13 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     # Cases error when it is not casted as string in create_token
     id: Optional[str] = None
-    
+    privileged: Optional[bool] = None
+
+class AdminPost(BaseModel):
+    id: int
+    title: str
+    owner_id: int
+    created_at: datetime
+
+class AdminUser(UserOut):
+    pass

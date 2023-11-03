@@ -25,12 +25,13 @@ def verify_access_token(token: str, credentials_exception):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         id: str = str(payload.get("user_id"))
+        privileged: bool = bool(payload.get("privileged"))
         # Not working properly
         #print(type(payload.get("user_id")))
         #id: str = payload.get("user_id")
-        if id is None:
+        if id is None or privileged is None:
             raise credentials_exception
-        token_data = schemas.TokenData(id=id)
+        token_data = schemas.TokenData(id=id, privileged=privileged)
     except JWTError:
         raise credentials_exception
     return token_data
