@@ -1,12 +1,25 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm 
 from sqlalchemy.orm import Session
-
+from ..database import get_db
 from .. import database, schemas, models, utils, oauth2
 
 router = APIRouter(
     tags=["Auth"]
 )
+
+@router.post("/register", status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut) # Changes default status code
+def create_user(user: schemas.UserCreate, db: Session = Depends(get_db), ):
+    
+    if db.query(models.User).filter(models.User.email == user.email).first():
+        raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail=f"Email already exists")
+    user.password = utils.hash(user.password)
+    new_user = models.User(**user.model_dump())
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+    return new_user
 
 @router.post("/login", response_model=schemas.Token)
 def login(user_credentials: OAuth2PasswordRequestForm = Depends() , db: Session = Depends(database.get_db)):
