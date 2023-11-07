@@ -15,7 +15,7 @@ def get_posts(db: Session = Depends(get_db), limit: int = 5, search: Optional[st
     # Without fetching payments data
     #posts = db.query(models.Post).filter(models.Post.title.contains(search)).limit(limit).all()
 
-    posts = db.query(models.Post).filter(models.Post.title.contains(search)).limit(limit).options(joinedload(models.Post.payments)).all()
+    posts = db.query(models.Post).filter(models.Post.title.contains(search)).order_by(models.Post.id).limit(limit).options(joinedload(models.Post.payments)).all()
     
     return posts
 
