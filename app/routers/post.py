@@ -10,12 +10,12 @@ router = APIRouter(
 )
 
 @router.get("/", response_model=List[schemas.Post]) # Default way how response is supposed to look like
-def get_posts(db: Session = Depends(get_db), limit: int = 5, search: Optional[str] = ""): # %20 - Space in url, 5 posts limit per response 
+def get_posts(db: Session = Depends(get_db), search: Optional[str] = ""): # %20 - Space in url, 5 posts limit per response 
 
     # Without fetching payments data
     #posts = db.query(models.Post).filter(models.Post.title.contains(search)).limit(limit).all()
 
-    posts = db.query(models.Post).filter(models.Post.title.contains(search)).order_by(models.Post.id).limit(limit).options(joinedload(models.Post.payments)).all()
+    posts = db.query(models.Post).filter(models.Post.title.contains(search)).order_by(models.Post.id).options(joinedload(models.Post.payments)).all()
     
     return posts
 
