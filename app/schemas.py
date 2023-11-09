@@ -15,6 +15,7 @@ class UserOut(BaseModel):
     name: str
     email: EmailStr
     created_at: datetime
+    privileged: bool
     class Config:
         from_attributes = True
 

@@ -30,7 +30,7 @@ def delete_user(id: int, db: Session = Depends(get_db), current_user =  Depends(
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
     deleted_user_query = db.query(models.User).filter(models.User.id == id)
     #deleted_user = deleted_user_query.first()
-    if delete_user == None:
+    if deleted_user_query.first() == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with {id} not found")
     deleted_user_query.delete(synchronize_session=False)
     db.commit()
