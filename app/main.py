@@ -1,4 +1,5 @@
-from fastapi import FastAPI 
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from . import models
 from .database import engine, get_db
 from .routers import post, user, auth, admin
@@ -35,6 +36,18 @@ get_db()
 #     for index, post in enumerate(my_posts):
 #         if post["id"] == id:
 #             return index
+
+origins = [
+    "http://localhost:8080",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def root():
