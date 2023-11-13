@@ -61,6 +61,21 @@ def test_unauth_get_my_posts(client, test_user, test_posts):
     res = client.get("/users/myuser/myposts/")
     assert res.status_code == 401
 
+def test_auth_get_my_payments(authorized_client, test_user, test_posts):
+    res = authorized_client.get("/users/myuser/mypayments/")
+
+    def validate(payment):
+        return schemas.Payment(**payment)
+    payment_map = map(validate, res.json())
+    payment_list = list(payment_map)
+    for payment in payment_list:
+        assert payment.user_id == test_user["id"]
+    assert res.status_code == 200
+
+def test_unauth_get_my_payments(client, test_user, test_posts):
+    res = client.get("/users/myuser/mypayments/")
+    assert res.status_code == 401
+
 # GETTING ONE USER
 def test_get_one_user(client, test_user):
     res = client.get(f"/users/{test_user['id']}/")
