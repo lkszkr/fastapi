@@ -81,21 +81,6 @@ def test_unauth_get_one_posts_not_exist(client):
     res = client.get("/posts/99999")
     assert res.status_code == 404
 
-def test_auth_get_my_posts(authorized_client, test_user, test_posts):
-    res = authorized_client.get("/posts/myposts/")
-
-    def validate(post):
-        return schemas.Post(**post)
-    post_map = map(validate, res.json())
-    posts_list = list(post_map)
-    for post in posts_list:
-        assert post.owner_id == test_user["id"]
-    assert res.status_code == 200
-
-def test_unauth_get_my_posts(client, test_user, test_posts):
-    res = client.get("/posts/myposts/")
-    assert res.status_code == 401
-
 # CREATING POSTS
 @pytest.mark.parametrize("title, content, goal, image",[
     ("New title", "New content", 99, "NewEncodedString"),

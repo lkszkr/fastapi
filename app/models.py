@@ -16,6 +16,7 @@ class Payments(Base):
     post_id = Column(Integer, ForeignKey("posts.id", ondelete="CASCADE"), nullable=False)
 
     post = relationship("Post", back_populates="payments")
+    owner = relationship("User")
 
 
 class Post(Base):
@@ -46,5 +47,10 @@ class User(Base):
     password = Column(String, nullable=False)
     privileged = Column(Boolean, nullable=False, server_default="False")
     created_at = Column(TIMESTAMP(timezone=False), nullable=False, server_default=text("now()"))
+
+    # post = relationship("Post")
+    # payment = relationship("Payments")
+
+
 
 

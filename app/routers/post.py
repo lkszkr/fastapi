@@ -64,11 +64,6 @@ def create_posts(post: schemas.CreatePost, db: Session = Depends(get_db), curren
 
 #     return  new_post
 
-@router.get("/myposts", response_model=List[schemas.Post])
-def get_my_posts(db: Session = Depends(get_db), current_user =  Depends(oauth2.get_current_user)):
-    my_posts = db.query(models.Post).filter(models.Post.owner_id == current_user.id).options(joinedload(models.Post.payments)).all()
-    return my_posts
-
 @router.get("/{id}", response_model=schemas.Post)
 def get_post(id: int, db: Session = Depends(get_db)): # Validates and casts from str to int
     post = db.query(models.Post).filter(models.Post.id == id).options(joinedload(models.Post.payments)).first()

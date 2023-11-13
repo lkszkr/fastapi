@@ -1,7 +1,8 @@
 from fastapi import Depends, status, HTTPException, APIRouter
 from .. import models, schemas, utils, oauth2
 from ..database import get_db
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
+from typing import List
 
 router = APIRouter(
     prefix="/users",
@@ -50,6 +51,16 @@ def update_my_user(user: schemas.UserCreate, db: Session = Depends(get_db),  cur
     my_user_data.update(update_dict, synchronize_session=False)
     db.commit()
     return my_user_data.first()
+
+@router.get("/myuser/myposts", response_model=List[schemas.Post])
+def get_my_posts(db: Session = Depends(get_db), current_user =  Depends(oauth2.get_current_user)):
+    my_posts = db.query(models.Post).filter(models.Post.owner_id == current_user.id).options(joinedload(models.Post.payments)).all()
+    return my_posts
+
+@router.get("/myuser/mypayments", response_model=List[schemas.Payment])
+def get_my_payments(db: Session = Depends(get_db), current_user =  Depends(oauth2.get_current_user)):
+    my_posts = db.query(models.Payments).filter(models.Payments.user_id == current_user.id).all()
+    return my_posts
 
 @router.get("/{id}",response_model=schemas.UserOut )
 def get_user(id: int, db: Session = Depends(get_db)):

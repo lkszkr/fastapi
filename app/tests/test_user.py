@@ -46,6 +46,21 @@ def test_unauth_update_my_user(client, test_user):
     res = client.put("/users/myuser/", json=data)
     assert res.status_code == 401
 
+def test_auth_get_my_posts(authorized_client, test_user, test_posts):
+    res = authorized_client.get("/users/myuser/myposts/")
+
+    def validate(post):
+        return schemas.Post(**post)
+    post_map = map(validate, res.json())
+    posts_list = list(post_map)
+    for post in posts_list:
+        assert post.owner_id == test_user["id"]
+    assert res.status_code == 200
+
+def test_unauth_get_my_posts(client, test_user, test_posts):
+    res = client.get("/users/myuser/myposts/")
+    assert res.status_code == 401
+
 # GETTING ONE USER
 def test_get_one_user(client, test_user):
     res = client.get(f"/users/{test_user['id']}/")
