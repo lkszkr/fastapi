@@ -13,6 +13,7 @@ class UserCreate(BaseModel):
 class UserOut(BaseModel):
     id: int
     name: str
+    surname: str
     email: EmailStr
     created_at: datetime
     privileged: bool
@@ -27,6 +28,7 @@ class Payment(BaseModel):
     id: int
     ammount: float
     status: bool
+    created_at: datetime
     user_id: int
     post_id: int
     class Config:

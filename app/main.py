@@ -38,7 +38,9 @@ get_db()
 #             return index
 
 origins = [
-    "http://localhost:8080/",
+    "http://localhost",
+    "http://localhost:8080",
+    "http://localhost:8080/posts/",
 ]
 
 app.add_middleware(
