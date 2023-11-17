@@ -9,7 +9,7 @@ router = APIRouter(
     tags=["Posts"]
 )
 
-@router.get("/", response_model=List[schemas.Post]) # Default way how response is supposed to look like
+@router.get("/", response_model=List[schemas.Post], status_code=status.HTTP_200_OK) # Default way how response is supposed to look like
 def get_posts(db: Session = Depends(get_db), search: Optional[str] = ""): # %20 - Space in url, 5 posts limit per response 
 
     # Without fetching payments data
@@ -64,7 +64,7 @@ def create_posts(post: schemas.CreatePost, db: Session = Depends(get_db), curren
 
 #     return  new_post
 
-@router.get("/{id}", response_model=schemas.Post)
+@router.get("/{id}", response_model=schemas.Post, status_code=status.HTTP_200_OK)
 def get_post(id: int, db: Session = Depends(get_db)): # Validates and casts from str to int
     post = db.query(models.Post).filter(models.Post.id == id).options(joinedload(models.Post.payments)).first()
     if not post:
@@ -84,7 +84,7 @@ def create_payment(id: int, payment: schemas.CreatePayment, db: Session = Depend
 
     return new_payment
 
-@router.delete("/{id}")
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(id: int, db: Session = Depends(get_db), current_user =  Depends(oauth2.get_current_user)):
     deleted_post_query = db.query(models.Post).filter(models.Post.id == id)
     deleted_post = deleted_post_query.first()
@@ -95,9 +95,9 @@ def delete_post(id: int, db: Session = Depends(get_db), current_user =  Depends(
     deleted_post_query.delete(synchronize_session=False)
     db.commit()
 
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return Response()
 
-@router.put("/{id}", response_model=schemas.Post)
+@router.put("/{id}", response_model=schemas.Post, status_code=status.HTTP_200_OK)
 def update_post(id: int, post : schemas.CreatePost, db: Session = Depends(get_db), current_user =  Depends(oauth2.get_current_user)):
     updated_post_query = db.query(models.Post).filter(models.Post.id == id)
     updated_post = updated_post_query.first()

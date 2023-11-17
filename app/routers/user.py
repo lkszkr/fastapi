@@ -23,14 +23,14 @@ router = APIRouter(
 
 #     return new_user
 
-@router.get("/myuser", response_model=schemas.UserOut)
+@router.get("/myuser", response_model=schemas.UserOut, status_code=status.HTTP_200_OK)
 def get_my_user(db: Session = Depends(get_db),  current_user =  Depends(oauth2.get_current_user)):
     my_user_data = db.query(models.User).filter(models.User.id == current_user.id).first()
     if not my_user_data:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User data does not exist")
     return my_user_data
 
-@router.put("/myuser", response_model=schemas.UserOut)
+@router.put("/myuser", response_model=schemas.UserOut, status_code=status.HTTP_200_OK)
 def update_my_user(user: schemas.UserCreate, db: Session = Depends(get_db),  current_user =  Depends(oauth2.get_current_user)):
     my_user_data = db.query(models.User).filter(models.User.id == current_user.id)
     existing_user = my_user_data.first()
@@ -52,17 +52,18 @@ def update_my_user(user: schemas.UserCreate, db: Session = Depends(get_db),  cur
     db.commit()
     return my_user_data.first()
 
-@router.get("/myuser/myposts", response_model=List[schemas.Post])
+@router.get("/myuser/myposts", response_model=List[schemas.Post], status_code=status.HTTP_200_OK)
 def get_my_posts(db: Session = Depends(get_db), current_user =  Depends(oauth2.get_current_user)):
     my_posts = db.query(models.Post).filter(models.Post.owner_id == current_user.id).options(joinedload(models.Post.payments)).all()
     return my_posts
 
-@router.get("/myuser/mypayments", response_model=List[schemas.Payment])
+@router.get("/myuser/mypayments", response_model=List[schemas.Payment], status_code=status.HTTP_200_OK)
 def get_my_payments(db: Session = Depends(get_db), current_user =  Depends(oauth2.get_current_user)):
-    my_posts = db.query(models.Payments).filter(models.Payments.user_id == current_user.id).all()
-    return my_posts
+    my_payments = db.query(models.Payments).filter(models.Payments.user_id == current_user.id).all()
+    return my_payments  
 
-@router.get("/{id}",response_model=schemas.UserOut )
+# ?????
+@router.get("/{id}",response_model=schemas.UserOut, status_code=status.HTTP_200_OK)
 def get_user(id: int, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.id == id).first()
     if not user:

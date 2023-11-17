@@ -10,21 +10,21 @@ router = APIRouter(
     tags=["Admin"]
 )
 
-@router.get("/posts", response_model=List[schemas.AdminPost])
+@router.get("/posts", response_model=List[schemas.AdminPost], status_code=status.HTTP_200_OK)
 def admin_get_posts(db: Session = Depends(get_db), current_user =  Depends(oauth2.get_current_user)):
     if not current_user.privileged:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
     posts = db.query(models.Post).all()
     return posts
 
-@router.get("/users", response_model=List[schemas.AdminUser])
+@router.get("/users", response_model=List[schemas.AdminUser], status_code=status.HTTP_200_OK)
 def admin_get_users(db: Session = Depends(get_db), current_user =  Depends(oauth2.get_current_user)):
     if not current_user.privileged:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
     users = db.query(models.User).all()
     return users
 
-@router.delete("/users/{id}")
+@router.delete("/users/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_user(id: int, db: Session = Depends(get_db), current_user =  Depends(oauth2.get_current_user)):
     if not current_user.privileged:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
@@ -35,4 +35,4 @@ def delete_user(id: int, db: Session = Depends(get_db), current_user =  Depends(
     deleted_user_query.delete(synchronize_session=False)
     db.commit()
 
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return Response()
