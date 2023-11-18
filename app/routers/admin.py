@@ -24,7 +24,7 @@ def admin_get_users(db: Session = Depends(get_db), current_user =  Depends(oauth
     users = db.query(models.User).all()
     return users
 
-@router.delete("/users/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/users/{id}")
 def delete_user(id: int, db: Session = Depends(get_db), current_user =  Depends(oauth2.get_current_user)):
     if not current_user.privileged:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
@@ -35,4 +35,4 @@ def delete_user(id: int, db: Session = Depends(get_db), current_user =  Depends(
     deleted_user_query.delete(synchronize_session=False)
     db.commit()
 
-    return Response()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

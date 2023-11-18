@@ -84,7 +84,7 @@ def create_payment(id: int, payment: schemas.CreatePayment, db: Session = Depend
 
     return new_payment
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{id}")
 def delete_post(id: int, db: Session = Depends(get_db), current_user =  Depends(oauth2.get_current_user)):
     deleted_post_query = db.query(models.Post).filter(models.Post.id == id)
     deleted_post = deleted_post_query.first()
@@ -95,7 +95,7 @@ def delete_post(id: int, db: Session = Depends(get_db), current_user =  Depends(
     deleted_post_query.delete(synchronize_session=False)
     db.commit()
 
-    return Response()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 @router.put("/{id}", response_model=schemas.Post, status_code=status.HTTP_200_OK)
 def update_post(id: int, post : schemas.CreatePost, db: Session = Depends(get_db), current_user =  Depends(oauth2.get_current_user)):
