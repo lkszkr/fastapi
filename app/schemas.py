@@ -1,7 +1,7 @@
 from datetime import datetime
 import email
 from typing import Optional, List
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, validator
 #Pydantic validates data automaticly
 
 class UserCreate(BaseModel):
@@ -9,6 +9,11 @@ class UserCreate(BaseModel):
     surname: str
     email: EmailStr
     password: str
+    @validator("name", "surname", "password", pre=True, always=True)
+    def check_whitespace(cls, value):
+        if not value.strip():
+            raise ValueError("Field cannot be only spaces")
+        return value
 
 class UserOut(BaseModel):
     id: int
@@ -36,6 +41,11 @@ class Payment(BaseModel):
 
 class CreatePayment(BaseModel):
     ammount: float
+    @validator("ammount", pre=True, always=True)
+    def check_greater_than_one(cls, value):
+        if value <= 1.0:
+            raise ValueError("Amount must be greater than 1.0")
+        return value
 
 class PostBase(BaseModel):
     title: str
@@ -45,6 +55,11 @@ class PostBase(BaseModel):
 
 class CreatePost(PostBase):
     pass
+    @validator("title", "content", pre=True, always=True)
+    def check_whitespace(cls, value):
+        if not value.strip():
+            raise ValueError("Field cannot be only spaces")
+        return value
 
 class Post(PostBase):
     id: int
