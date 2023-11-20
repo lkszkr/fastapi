@@ -9,6 +9,7 @@ class UserCreate(BaseModel):
     surname: str
     email: EmailStr
     password: str
+    image: Optional[str] = None 
     @validator("name", "surname", "password", pre=True, always=True)
     def check_whitespace(cls, value):
         if not value.strip():
@@ -20,6 +21,7 @@ class UserOut(BaseModel):
     name: str
     surname: str
     email: EmailStr
+    image: Optional[str]
     created_at: datetime
     privileged: bool
     class Config:
