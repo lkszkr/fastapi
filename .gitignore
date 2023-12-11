@@ -5,3 +5,5 @@
 .vscode
 fastapi.code-workspace
 .env
+__pycache__
+.pytest_cache
