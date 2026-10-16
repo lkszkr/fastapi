@@ -26,7 +26,7 @@ FastAPI-based API allows users to create and manage charitable fundraising campa
 ## Requirements
 
 - Python 3.11.6
-- PstgreSQL
+- PostgreSQL
 
 ## Installation
 
@@ -38,7 +38,7 @@ venv/Scripts/Activate.ps1
 pip install -r requirements.txt
 
 ## Configuration
-Create .env file in root dicectory with this fields to connect to database:
+Create .env file in root directory with this fields to connect to database:
 - DATABASE_HOSTNAME=your_database_hostname (ex. localhost)
 - DATABASE_PORT=port_your_database_run_on
 - DATABASE_PASSWORD=password_for_accesing_database
@@ -49,7 +49,7 @@ Create .env file in root dicectory with this fields to connect to database:
 - ACCESS_TOKEN_EXPIRE_MINUTES=token_time
 
 ## Usage
-**Running Aplication**
+**Running Application**
 uvicorn app.main:app --reload or uvicorn app.main:app 
 Reload flags enables hot reload but use much more resources
 **Api Documentation**
